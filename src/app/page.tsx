@@ -36,14 +36,23 @@ export default function Home() {
 
       const data = await response.json();
 
-      if (data.caption) {
-        setCaption(data.caption);
+      if (response.ok) {
+        if (data.caption) {
+          setCaption(data.caption);
+        } else {
+          setCaption("Failed to generate caption. No caption returned from API.");
+        }
       } else {
-        setCaption("Failed to generate caption. Please try again.");
+        // Handle specific error responses from the API
+        if (data.error) {
+          setCaption(`Error: ${data.error}`);
+        } else {
+          setCaption("Failed to generate caption. Please try again.");
+        }
       }
     } catch (error) {
-      console.error(error);
-      setCaption("An error occurred. Please try again.");
+      console.error("Network error or other exception:", error);
+      setCaption("Network error. Please check your connection and try again.");
     } finally {
       setIsLoading(false);
     }
